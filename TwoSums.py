@@ -13,7 +13,6 @@ class Solution:
             y = sorted_nums[high]
             sum = x + y
             if sum == target:
-                condition_satisifed = True
                 first = 0
                 second = 0
                 if x == y:
