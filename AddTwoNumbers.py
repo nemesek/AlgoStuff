@@ -47,27 +47,16 @@ class Solution:
         return answer
 
 if __name__ == "__main__":
+    values = [3,4,2,4,6,5,0,0,9,9,9,9,9,9,9,9,9,9,9]
+    nodes = []
+    for idx, val in enumerate(values):
+        if idx in (0, 3,6,7,8, 15):
+            nodes.append(ListNode(val, None))
+        else:
+            nodes.append(ListNode(val, nodes[idx - 1]))
+   
     sol = Solution()
-    node1 = ListNode(3, None)
-    node2 = ListNode(4, node1)
-    node3 = ListNode(2, node2)
-    node4 = ListNode(4, None)
-    node5 = ListNode(6, node4)
-    node6 = ListNode(5, node5)
-    answer1 = sol.addTwoNumbers(node3, node6)
-    node1 = ListNode(0, None)
-    node4 = ListNode(0, None)
-    answer2 = sol.addTwoNumbers(node1, node4)
-    node1 = ListNode(9, None)
-    node2 = ListNode(9, node1)
-    node3 = ListNode(9, node2)
-    node4 = ListNode(9, node3)
-    node5 = ListNode(9, node4)
-    node6 = ListNode(9, node5)
-    node7 = ListNode(9, node6)
-    node8 = ListNode(9, None)
-    node9 = ListNode(9, node8)
-    node10 = ListNode(9, node9)
-    node11 = ListNode(9, node10)
-    answer3 = sol.addTwoNumbers(node7, node11)
+    answer1 = sol.addTwoNumbers(nodes[2], nodes[5])
+    answer2 = sol.addTwoNumbers(nodes[6], nodes[7])
+    # answer3 = sol.addTwoNumbers(nodes[], nodes[15])
     print('done')
