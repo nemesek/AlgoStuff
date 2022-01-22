@@ -8,7 +8,7 @@
 # 0 <= Node.val <= 9
 # It is guaranteed that the list represents a number that does not have leading zeros.
 
-from typing import List, Optional
+from typing import Optional
 class ListNode:
     def __init__(self, val=0, next=None):
         self.val = val
@@ -50,13 +50,13 @@ if __name__ == "__main__":
     values = [3,4,2,4,6,5,0,0,9,9,9,9,9,9,9,9,9,9,9]
     nodes = []
     for idx, val in enumerate(values):
-        if idx in (0, 3,6,7,8, 15):
+        if idx in (0, 3,6,7,8,15):
             nodes.append(ListNode(val, None))
-        else:
+        else:  
             nodes.append(ListNode(val, nodes[idx - 1]))
    
     sol = Solution()
     answer1 = sol.addTwoNumbers(nodes[2], nodes[5])
     answer2 = sol.addTwoNumbers(nodes[6], nodes[7])
-    # answer3 = sol.addTwoNumbers(nodes[], nodes[15])
+    answer3 = sol.addTwoNumbers(nodes[14], nodes[18])
     print('done')
