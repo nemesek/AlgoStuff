@@ -24,6 +24,8 @@
 # -106 <= nums1[i], nums2[i] <= 106
 
 from typing import List
+import numpy as np
+
 class Solution:
 
     def _find_median(self, nums: List[int]) -> float:
@@ -78,6 +80,13 @@ class Solution:
         median = self._find_median(merged)
         return median
 
+    def findMedianSortedArrays2(self, nums1: List[int], nums2: List[int]) -> float:
+
+        m = len(nums1)
+        n = len(nums2)
+        max_ops = np.log2(m+n)
+        return max_ops
+
 
 def test(answer, expected):
     result = "Bad"
@@ -93,14 +102,27 @@ if __name__ == "__main__":
     nums2 = range(1,10)
     answer = sol.findMedianSortedArrays(nums1, nums2)
     test(answer, 5)
+    answer2 = sol.findMedianSortedArrays2(nums1,nums2)
+    print(f"answer2 is {answer2}")
     nums1 = [1,3]
     nums2 = [2]
     answer = sol.findMedianSortedArrays(nums1, nums2)
     test(answer, 2)
+    answer2 = sol.findMedianSortedArrays2(nums1,nums2)
+    print(f"answer2 is {answer2}")
     nums1 = [1,2]
     nums2 = [3,4]
     answer = sol.findMedianSortedArrays(nums1, nums2)
     test(answer, 2.5)
+    answer2 = sol.findMedianSortedArrays2(nums1,nums2)
+    print(f"answer2 is {answer2}")
+    nums1 = range(1,33, 1)
+    nums2 = range(33,65,1)
+    answer = sol.findMedianSortedArrays(nums1, nums2)
+    test(answer, 2.5)
+    answer2 = sol.findMedianSortedArrays2(nums1,nums2)
+    print(f"answer2 is {answer2}")
+    
 
 
     
