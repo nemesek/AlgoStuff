@@ -28,9 +28,10 @@ import numpy as np
 
 class Solution:
 
-    def _find_median(self, nums: List[int]) -> float:
+    def _find_median(self, nums: List[int]):
         n = len(nums)
         median = 0
+        idx1, idx2 = None, None
         if n == 0:
             return median
         
@@ -41,7 +42,7 @@ class Solution:
         else:
             idx = int(n/2)
             median = nums[idx]
-        return median
+        return (idx1, idx2,median)
 
     def _merge_sorted_lists(self, nums1: List[int], nums2: List[int]) -> List[int]:
         i = 0
@@ -73,18 +74,35 @@ class Solution:
                 break
         return merged
             
-
+    def _filter(self, nums, predicate):
+        try:
+            filtered= filter(predicate, nums)
+            filtered_list = list(filtered)
+            print(len(filtered_list))
+            return filtered_list
+        except:
+            # print(e.message)
+            return []
         
     def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
         merged = self._merge_sorted_lists(nums1, nums2)        
         median = self._find_median(merged)
-        return median
+        return median[2]
+
 
     def findMedianSortedArrays2(self, nums1: List[int], nums2: List[int]) -> float:
 
         m = len(nums1)
         n = len(nums2)
-        max_ops = np.log2(m+n)
+        total_elements = m + n 
+        max_ops = np.log2(total_elements)
+        nums1_median_data = self._find_median(nums1) #(O(1))
+        nums2_median_data = self._find_median(nums2) #(O(1))
+        if (nums2_median_data[2] > nums1_median_data[2]):
+            temp = nums1[nums1_median_data[0]:]
+            nums1 = self._filter(temp, lambda x: x < nums2_median_data[2])
+            print('here')
+
         return max_ops
 
 
@@ -98,24 +116,24 @@ def test(answer, expected):
 
 if __name__ == "__main__":
     sol = Solution()
-    nums1 = range(1,11)
-    nums2 = range(1,10)
-    answer = sol.findMedianSortedArrays(nums1, nums2)
-    test(answer, 5)
-    answer2 = sol.findMedianSortedArrays2(nums1,nums2)
-    print(f"answer2 is {answer2}")
-    nums1 = [1,3]
-    nums2 = [2]
-    answer = sol.findMedianSortedArrays(nums1, nums2)
-    test(answer, 2)
-    answer2 = sol.findMedianSortedArrays2(nums1,nums2)
-    print(f"answer2 is {answer2}")
-    nums1 = [1,2]
-    nums2 = [3,4]
-    answer = sol.findMedianSortedArrays(nums1, nums2)
-    test(answer, 2.5)
-    answer2 = sol.findMedianSortedArrays2(nums1,nums2)
-    print(f"answer2 is {answer2}")
+    # nums1 = range(1,11)
+    # nums2 = range(1,10)
+    # answer = sol.findMedianSortedArrays(nums1, nums2)
+    # test(answer, 5)
+    # answer2 = sol.findMedianSortedArrays2(nums1,nums2)
+    # print(f"answer2 is {answer2}")
+    # nums1 = [1,3]
+    # nums2 = [2]
+    # answer = sol.findMedianSortedArrays(nums1, nums2)
+    # test(answer, 2)
+    # answer2 = sol.findMedianSortedArrays2(nums1,nums2)
+    # print(f"answer2 is {answer2}")
+    # nums1 = [1,2]
+    # nums2 = [3,4]
+    # answer = sol.findMedianSortedArrays(nums1, nums2)
+    # test(answer, 2.5)
+    # answer2 = sol.findMedianSortedArrays2(nums1,nums2)
+    # print(f"answer2 is {answer2}")
     nums1 = range(1,33, 1)
     nums2 = range(33,65,1)
     answer = sol.findMedianSortedArrays(nums1, nums2)
