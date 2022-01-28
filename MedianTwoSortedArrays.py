@@ -40,8 +40,8 @@ class Solution:
             idx2 = idx1 - 1
             median = (nums[idx1] + nums[idx2])/2
         else:
-            idx = int(n/2)
-            median = nums[idx]
+            idx1 = int(n/2)
+            median = nums[idx1]
         return (idx1, idx2,median)
 
     def _merge_sorted_lists(self, nums1: List[int], nums2: List[int]) -> List[int]:
@@ -89,8 +89,47 @@ class Solution:
         median = self._find_median(merged)
         return median[2]
 
+    def _binary_search(self, arr, elem, start=0, end=None):
+        if end is None:
+            end = len(arr) - 1
+        if start > end:
+            return False
+
+        mid = (start + end) // 2
+        if elem == arr[mid]:
+            return mid
+        if elem < arr[mid]:
+            return self._binary_search(arr, elem, start, mid-1)
+        # elem > arr[mid]
+        return self._binary_search(arr, elem, mid+1, end)
+
+    def _binary_filter(self, arr, elem, start=0, end=None, isLessThan = True):
+        if end is None:
+            end = len(arr) -1
+        if start > end:
+            if isLessThan:
+                return arr[start:]
+            else:
+                return arr[:start]
+
+        mid = (start + end) // 2
+        if elem == arr[mid]:
+            return arr[:mid]
+        if elem < arr[mid]:
+            return self._binary_filter(arr, elem, start, mid - 1, isLessThan)
+        return self._binary_filter(arr, elem, mid + 1, end, isLessThan)
+
 
     def findMedianSortedArrays2(self, nums1: List[int], nums2: List[int]) -> float:
+
+        # def pred(sorted_nums, n):
+        #     filtered_nums = []
+
+        #     if len(sorted_nums == 0):
+        #         return filtered_nums
+        #     else:
+
+ 
 
         m = len(nums1)
         n = len(nums2)
@@ -98,12 +137,20 @@ class Solution:
         max_ops = np.log2(total_elements)
         nums1_median_data = self._find_median(nums1) #(O(1))
         nums2_median_data = self._find_median(nums2) #(O(1))
+        median = (nums1_median_data[2] + nums2_median_data[2])/2
         if (nums2_median_data[2] > nums1_median_data[2]):
-            temp = nums1[nums1_median_data[0]:]
-            nums1 = self._filter(temp, lambda x: x < nums2_median_data[2])
+            nums1 = nums1[nums1_median_data[0]:]
+            nums2 = nums2[:nums2_median_data[0]]
+            # # nums1 = self._filter(temp, lambda x: x > nums2_median_data[2])
+            # # nums1 = self._filter(temp, pred())
+            # nums1 = list(filter(lambda x: x > nums2_median_data[2], temp))
+            # temp = nums2[:nums2_median_data[0]]
+            # nums2 = list(filter(lambda x: x < nums1_median_data[2], temp))
+            nums1 = self._binary_filter(nums1, nums2_median_data[2],0, None, False)
+            nums2 = self._binary_filter(nums2, nums1_median_data[2], 0, None, True)
             print('here')
 
-        return max_ops
+        return median
 
 
 def test(answer, expected):
@@ -134,8 +181,10 @@ if __name__ == "__main__":
     # test(answer, 2.5)
     # answer2 = sol.findMedianSortedArrays2(nums1,nums2)
     # print(f"answer2 is {answer2}")
-    nums1 = range(1,33, 1)
-    nums2 = range(33,65,1)
+    # nums1 = range(1,33, 1)
+    # nums2 = range(33,65,1)
+    nums1 = [1,3,5,6,7,8]
+    nums2 = [2,4,10,15,20]
     answer = sol.findMedianSortedArrays(nums1, nums2)
     test(answer, 2.5)
     answer2 = sol.findMedianSortedArrays2(nums1,nums2)
