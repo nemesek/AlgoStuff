@@ -33,7 +33,7 @@ class Solution:
         median = 0
         idx1, idx2 = None, None
         if n == 0:
-            return median
+            return None
         
         if (n % 2 == 0):
             idx1 = n//2
@@ -128,27 +128,59 @@ class Solution:
         #     if len(sorted_nums == 0):
         #         return filtered_nums
         #     else:
-
- 
-
         m = len(nums1)
         n = len(nums2)
         total_elements = m + n 
         max_ops = np.log2(total_elements)
         nums1_median_data = self._find_median(nums1) #(O(1))
         nums2_median_data = self._find_median(nums2) #(O(1))
-        median = (nums1_median_data[2] + nums2_median_data[2])/2
-        if (nums2_median_data[2] > nums1_median_data[2]):
-            nums1 = nums1[nums1_median_data[0]:]
-            nums2 = nums2[:nums2_median_data[0]]
-            # # nums1 = self._filter(temp, lambda x: x > nums2_median_data[2])
-            # # nums1 = self._filter(temp, pred())
-            # nums1 = list(filter(lambda x: x > nums2_median_data[2], temp))
-            # temp = nums2[:nums2_median_data[0]]
-            # nums2 = list(filter(lambda x: x < nums1_median_data[2], temp))
-            nums1 = self._binary_filter(nums1, nums2_median_data[2],0, None, False)
-            nums2 = self._binary_filter(nums2, nums1_median_data[2], 0, None, True)
-            print('here')
+        nums1_median = nums1_median_data[2]
+        nums2_median = nums2_median_data[2]
+        nums1_median_idx = nums1_median_data[0]
+        nums2_median_idx = nums2_median_data[0]
+        median = (nums1_median + nums2_median)/2
+
+        while total_elements > 2:
+            if ( nums2_median > nums1_median):
+                nums1 = nums1[nums1_median_idx:]
+                nums2 = nums2[:nums2_median_idx]
+                # # nums1 = self._filter(temp, lambda x: x > nums2_median_data[2])
+                # # nums1 = self._filter(temp, pred())
+                # nums1 = list(filter(lambda x: x > nums2_median_data[2], temp))
+                # temp = nums2[:nums2_median_data[0]]
+                # nums2 = list(filter(lambda x: x < nums1_median_data[2], temp))
+                nums1 = self._binary_filter(nums1, nums2_median,0, None, False)
+                nums2 = self._binary_filter(nums2, nums1_median, 0, None, True)
+                #median = self.findMedianSortedArrays(nums1, nums2)
+                m = len(nums1)
+                n = len(nums2)
+                total_elements = m + n
+                print('foo')
+
+                nums1_median_data = self._find_median(nums1) #(O(1))
+                nums2_median_data = self._find_median(nums2) #(O(1))
+                
+                if nums2_median_data == None or nums2_median_data == None:
+                    return median
+                nums1_median = nums1_median_data[2]
+                nums2_median = nums2_median_data[2]
+                nums1_median_idx = nums1_median_data[0]
+                nums2_median_idx = nums2_median_data[0]
+                median = (nums1_median + nums2_median)/2
+
+            elif nums2_median < nums1_median:
+                print('bar')
+                
+                nums1 = nums1[nums1_median_data[0]:]
+                nums2 = nums2[:nums2_median_data[0]]
+                nums1 = self._binary_filter(nums1, nums2_median_data[2],0, None, False)
+                nums2 = self._binary_filter(nums2, nums1_median_data[2], 0, None, True)
+                median = self.findMedianSortedArrays(nums1, nums2)
+                m = len(nums1)
+                n = len(nums2)
+            else:
+                print('baz')
+
 
         return median
 
@@ -184,9 +216,9 @@ if __name__ == "__main__":
     # nums1 = range(1,33, 1)
     # nums2 = range(33,65,1)
     nums1 = [1,3,5,6,7,8]
-    nums2 = [2,4,10,15,20]
+    nums2 = [2,4,10,15,20] # [1,2,3,4,5,6,7,8,10,15,20]
     answer = sol.findMedianSortedArrays(nums1, nums2)
-    test(answer, 2.5)
+    test(answer, 6)
     answer2 = sol.findMedianSortedArrays2(nums1,nums2)
     print(f"answer2 is {answer2}")
     
