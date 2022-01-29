@@ -216,9 +216,9 @@ if __name__ == "__main__":
     # nums1 = range(1,33, 1)
     # nums2 = range(33,65,1)
     nums1 = [1,3,5,6,7,8]
-    nums2 = [2,4,10,15,20] # [1,2,3,4,5,6,7,8,10,15,20]
+    nums2 = [2,4,10,15,20,21] # [1,2,3,4,5,6,7,8,10,15,20,21] median is 5.5
     answer = sol.findMedianSortedArrays(nums1, nums2)
-    test(answer, 6)
+    test(answer, 6.5)
     answer2 = sol.findMedianSortedArrays2(nums1,nums2)
     print(f"answer2 is {answer2}")
     
