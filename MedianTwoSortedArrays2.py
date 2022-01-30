@@ -46,6 +46,8 @@ class Solution:
 
     def _handle_list_size_two(self, two_element_list: List[int], nums: List[int]) -> float:
         n = len(nums)
+        num_mid_idx = int(n/2)
+        
         if n == 2:
             nums.extend(two_element_list)
             sorted_numbers = sorted(nums)
@@ -54,6 +56,25 @@ class Solution:
         if n % 2 == 0:
             # check for min of second element in smaller array and element just after the second middle in the bigger array N/2 + 1 element
             # todo : start from here dan
+            median_data = self._find_median(nums)
+            minBigger = nums[median_data[1]]
+            maxBigger = nums[median_data[0]]
+            minSmaller = two_element_list[0]
+            maxSmaller = two_element_list[1]
+
+            if minBigger >= minSmaller and maxBigger <= maxSmaller: # case where minSmaller, minBigger, maxBigger, maxSmaller
+                return median_data[2]
+            if minBigger >= maxSmaller: # case where minSmaller maxSmaller minBigger maxBigger, we need to consider elements two positions before middle
+                two_from_middle = nums[num_mid_idx - 2]
+                if two_from_middle > minSmaller: # todo: should I just return the max of two_from_middle and minSmaller?
+                    return (two_from_middle + minBigger)/2
+                else:
+                    return (two_from_middle + minSmaller)/2
+            if minSmaller >= maxBigger: # case where minBigger maxBigger minSmaller maxSmaller, we need to consider elements two position beyond middle
+                two_from_middle = nums[num_mid_idx + 1]
+                return min(two_from_middle, maxBigger)
+            
+            
         return 0
 
 
@@ -90,8 +111,8 @@ class Solution:
 
 if __name__ == "__main__":
     sol = Solution()
-    nums1 = [1,2]
-    nums2 = [3,4,5,6]
+    nums1 = [3,7]
+    nums2 = [1,4,5,6]
     answer = sol.findMedianSortedArrays(nums1, nums2)
     print(answer)
     # nums1 = range(1,11)
