@@ -77,11 +77,47 @@ class Solution:
             
         return 0
 
+    def _binary_filter(self, arr, elem, start=0, end=None, isLessThan = True):
+        if end is None:
+            end = len(arr) -1
+        if start > end:
+            if isLessThan:
+                return arr[start:]
+            else:
+                return arr[:start]
+
+        mid = (start + end) // 2
+        if elem == arr[mid]:
+            return arr[:mid]
+        if elem < arr[mid]:
+            return self._binary_filter(arr, elem, start, mid - 1, isLessThan)
+        return self._binary_filter(arr, elem, mid + 1, end, isLessThan)
 
 
     def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
         m = len(nums1)
         n = len(nums2)
+
+        if (m > 2 and n > 2):
+            nums1_median_data = self._find_median(nums1)
+            nums2_median_data = self._find_median(nums2)
+            nums1_median = nums1_median_data[2]
+            nums2_median = nums2_median_data[2]
+            if nums1_median == nums2_median:
+                return nums1_median
+            elif nums2_median > nums1_median:
+                nums1 = nums1[nums1_median_data[0]:]
+                nums2 = nums2[:nums2_median_data[0]]
+              #  nums1 = self._binary_filter(nums1, nums2_median,0,None,False)
+               # nums2 = self._binary_filter(nums2, nums1_median, 0, None, True)
+                return self.findMedianSortedArrays(nums1, nums2)
+            else:
+                nums1 = nums1[:nums1_median_data[0]]
+                nums2 = nums2[nums2_median_data[0]:]
+                #nums1 = self._binary_filter(nums1, nums2_median, 0, None, True)
+                #nums2 = self._binary_filter(nums2, nums1_median, 0, None, False)
+                return self.findMedianSortedArrays(nums1,nums2)
+
         if m > n:
             if n == 0:
                 return self._find_median(nums1)[2]
@@ -111,9 +147,9 @@ class Solution:
 
 if __name__ == "__main__":
     sol = Solution()
-    nums1 = [3,7]
+    nums1 = [3,7,8]
     nums2 = [1,4,5,6]
-    answer = sol.findMedianSortedArrays(nums1, nums2)
+    answer = sol.findMedianSortedArrays(nums1, nums2) # [1,3,4,5,6,7,8] answer should be 5 but it's 5.5 (if I do binary filter) right now
     print(answer)
     # nums1 = range(1,11)
     # nums2 = range(1,10)
