@@ -148,24 +148,29 @@ class Solution:
         m = len(nums1)
         n = len(nums2)
 
+        if m + n < 7:
+            nums_list = list(nums1)
+            nums_list.extend(nums2)
+            sorted_numbers = sorted(nums_list)
+            return self._find_median(sorted_numbers)[2]
+
         if (m > 2 and n > 2):
             nums1_median_data = self._find_median(nums1)
             nums2_median_data = self._find_median(nums2)
             nums1_median = nums1_median_data[2]
             nums2_median = nums2_median_data[2]
+
             if nums1_median == nums2_median:
                 return nums1_median
+
             elif nums2_median > nums1_median:
                 nums1 = nums1[nums1_median_data[0]:]
                 nums2 = nums2[:nums2_median_data[0]]
-              #  nums1 = self._binary_filter(nums1, nums2_median,0,None,False)
-               # nums2 = self._binary_filter(nums2, nums1_median, 0, None, True)
                 return self.findMedianSortedArrays(nums1, nums2)
             else:
+                # todo if arrays are both below 3 i think i may have a bug here
                 nums1 = nums1[:nums1_median_data[0]]
                 nums2 = nums2[nums2_median_data[0]:]
-                #nums1 = self._binary_filter(nums1, nums2_median, 0, None, True)
-                #nums2 = self._binary_filter(nums2, nums1_median, 0, None, False)
                 return self.findMedianSortedArrays(nums1,nums2)
 
         if m > n:
@@ -202,21 +207,24 @@ def runTest(nums1, nums2):
 
 if __name__ == "__main__":
     sol = Solution()
-    # nums1 = [3,7,8]
-    # nums2 = [1,4,5,6]
-    # runTest(nums1,nums2)
-    # nums1 = range(1,11)
-    # nums2 = range(1,10)
-    # runTest(nums1,nums2)
-    # nums1 = [1,3]
-    # nums2 = [2]
-    # runTest(nums1,nums2)
-    # nums1 = [1,2]
-    # nums2 = [3,4]
-    # runTest(nums1,nums2)
-    # nums1 = range(1,33, 1)
-    # nums2 = range(33,65,1)
-    # runTest(nums1, nums2)
+    nums1 = [3,7,8]
+    nums2 = [1,4,5,6]
+    runTest(nums1,nums2)    # [1,3,4,5,6,7,8]
+    nums1 = range(1,11)
+    nums2 = range(1,10)
+    runTest(nums1,nums2)
+    nums1 = [1,3]
+    nums2 = [2]
+    runTest(nums1,nums2)
+    nums1 = [1,2]
+    nums2 = [3,4]
+    runTest(nums1,nums2)
+    nums1 = range(1,33, 1)
+    nums2 = range(33,65,1)
+    runTest(nums1, nums2)
     nums1 = [1,3,5,6,7,8]
     nums2 = [2,4,10,15,20,21] # [1,2,3,4,5,6,7,8,10,15,20,21] median is 6.5
+    runTest(nums1, nums2)
+    nums1 = range(1,100, 1)
+    nums2 = [100,101,102]   # [100] and [100,101] work
     runTest(nums1, nums2)
