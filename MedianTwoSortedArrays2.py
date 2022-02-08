@@ -1,5 +1,7 @@
 from cmath import exp
 from typing import List
+import random
+from xmlrpc.client import Boolean 
 
 class Solution:
     
@@ -146,7 +148,11 @@ class Solution:
         return self._binary_filter(arr, elem, mid + 1, end, isLessThan)
 
 
-    def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
+    def findMedianSortedArrays(self, nums1: List[int], nums2: List[int], debug: Boolean) -> float:
+
+        if debug:
+            answer = self.findMedianSortedArraysTest(nums1, nums1)
+            print('debug mode')
         m = len(nums1)
         n = len(nums2)
 
@@ -177,14 +183,20 @@ class Solution:
                 nums2 = nums2[:idx2]
                 # nums1 = self._binary_filter(nums1, nums2_median,0, None, False)
                 # nums2 = self._binary_filter(nums2, nums1_median, 0, None, True)
-                return self.findMedianSortedArrays(nums1, nums2)
+                return self.findMedianSortedArrays(nums1, nums2,debug)
             else:
+                idx1 = nums1_median_data[0]
+                idx2 = nums2_median_data[0]
+                if m > n:
+                    idx1 = n 
+                elif n > m:
+                    idx2 = m
                 # todo if arrays are both below 3 i think i may have a bug here
-                nums1 = nums1[:nums1_median_data[0]]
-                nums2 = nums2[nums2_median_data[0]:]
+                nums1 = nums1[:idx1]
+                nums2 = nums2[idx2:]
                 # nums1 = self._binary_filter(nums1, nums2_median,0, None, True)
                 # nums2 = self._binary_filter(nums2, nums1_median,0, None, False)
-                return self.findMedianSortedArrays(nums1,nums2)
+                return self.findMedianSortedArrays(nums1,nums2,debug)
 
         if m > n:
             if n == 0:
@@ -210,13 +222,20 @@ class Solution:
         return 0
 
             
-def runTest(nums1, nums2):
+def runTest(nums1, nums2, debug=False):
     test_answer = sol.findMedianSortedArraysTest(nums1,nums2)
-    answer = sol.findMedianSortedArrays(nums1, nums2)
-    result = "pass" if answer == test_answer else "fail" 
+    answer = sol.findMedianSortedArrays(nums1, nums2, debug)
+    result = "pass" if answer == test_answer else "!!!!!!!!!!!!!!!!!fail!!!!!!!!!!!!!!!!!" 
     print(result)     
     print(f"Actual: {answer} Expected: {test_answer}")
     print("+++++++++++++++")
+    return result
+
+def build_list():
+    n = random.randint(2,10)
+    randomlist = random.sample(range(1, 100000), n)
+    sorted_list = sorted(randomlist)
+    return sorted_list
 
 if __name__ == "__main__":
     sol = Solution()
@@ -233,9 +252,23 @@ if __name__ == "__main__":
     # nums1 = range(1,33, 1)
     # nums2 = range(33,65,1)
     # runTest(nums1, nums2)
-    nums1 = [1,3,5,6,7,8]
-    nums2 = [2,4,10,15,20,21] # [1,2,3,4,5,6,7,8,10,15,20,21] median is 6.5
-    runTest(nums1, nums2)
-    nums1 = range(1,100, 1)
-    nums2 = [100,101,102]   # [100] and [100,101] work
-    runTest(nums1, nums2)
+    # nums1 = [1,3,5,6,7,8]
+    # nums2 = [2,4,10,15,20,21] # [1,2,3,4,5,6,7,8,10,15,20,21] median is 6.5
+    # runTest(nums1, nums2)
+    # nums1 = range(1,100, 1)
+    # nums2 = [100,101,102]
+    # runTest(nums1, nums2)
+    # nums2 = range(1,100, 1)
+    # nums1 = [100,101,102]
+    count = 0
+    for i in range(100):
+        
+        nums1 = build_list()
+        nums2 = build_list()
+        result = runTest(nums1, nums2)
+        if result == "!!!!!!!!!!!!!!!!!fail!!!!!!!!!!!!!!!!!":
+            count += 1
+            print('got some debugging to do')
+            runTest(nums1, nums2, debug=True)
+
+    print(f"total failures {count} out of 100")
