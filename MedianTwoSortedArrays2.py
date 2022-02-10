@@ -1,7 +1,7 @@
 from cmath import exp
 from typing import List
 import random
-from xmlrpc.client import Boolean 
+
 
 class Solution:
     
@@ -94,8 +94,8 @@ class Solution:
             sorted_numbers = sorted(nums_list)
             return self._find_median(sorted_numbers)[2]
 
-        minSmaller = two_element_list[0]
-        maxSmaller = two_element_list[1]
+        smaller_min = two_element_list[0]
+        smaller_max = two_element_list[1]
         median_data = self._find_median(nums)
         median_bigger = median_data[2]
 
@@ -103,32 +103,32 @@ class Solution:
             # check for min of second element in smaller array and element just after the second middle in the bigger array N/2 + 1 element
             # todo : start from here dan
             
-            minBigger = nums[median_data[1]]
-            maxBigger = nums[median_data[0]]
+            larger_min = nums[median_data[1]]
+            larger_max = nums[median_data[0]]
 
-            if minBigger >= minSmaller and maxBigger <= maxSmaller: # case where minSmaller, minBigger, maxBigger, maxSmaller
+            if larger_min >= smaller_min and smaller_max >= larger_max: # case where minSmaller < minBigger < maxBigger < maxSmaller
                 return median_bigger
-            if minBigger >= maxSmaller: # case where minSmaller maxSmaller minBigger maxBigger, we need to consider elements two positions before middle
+            if larger_min >= smaller_max: # case where minSmaller < maxSmaller < minBigger < maxBigger, we need to consider elements two positions before middle
                 two_from_middle = nums[num_mid_idx - 2]
-                if two_from_middle > minSmaller: # todo: should I just return the max of two_from_middle and minSmaller?
-                    return (two_from_middle + minBigger)/2
+                if two_from_middle > smaller_min: # todo: should I just return the max of two_from_middle and minSmaller?
+                    return (two_from_middle + larger_min)/2
                 else:
-                    return (two_from_middle + minSmaller)/2
-            if minSmaller >= maxBigger: # case where minBigger maxBigger minSmaller maxSmaller, we need to consider elements two position beyond middle
+                    return (two_from_middle + smaller_min)/2
+            if smaller_min >= larger_max: # case where minBigger < maxBigger < minSmaller < maxSmaller, we need to consider elements two position beyond middle
                 two_from_middle = nums[num_mid_idx + 1]
-                return min(two_from_middle, maxBigger)
+                return min(two_from_middle, larger_max)
         else:
             
-            if minSmaller <= median_bigger and median_bigger <= maxSmaller:
+            if median_bigger >= smaller_min and smaller_max >= median_bigger:
                 return median_bigger
-            if maxSmaller < median_bigger:
+            if median_bigger > smaller_max:
                 # return max of median_bigger's element to left and maxSmaller
                 candiate = nums[median_data[0] - 1]
-                return max(candiate, maxSmaller)
-            if minSmaller > median_bigger:
+                return max(candiate, smaller_max)
+            if smaller_min > median_bigger:
                 # return min of median_bigger's element to right and minSmaller
                 candidate = nums[median_data[0] + 1]
-                return min(candidate, minSmaller)
+                return min(candidate, smaller_min)
         return 0
 
     def _binary_filter(self, arr, elem, start=0, end=None, isLessThan = True):
@@ -156,11 +156,11 @@ class Solution:
         m = len(nums1)
         n = len(nums2)
 
-        if m + n < 7:
-            nums_list = list(nums1)
-            nums_list.extend(nums2)
-            sorted_numbers = sorted(nums_list)
-            return self._find_median(sorted_numbers)[2]
+        # if m + n < 7:
+        #     nums_list = list(nums1)
+        #     nums_list.extend(nums2)
+        #     sorted_numbers = sorted(nums_list)
+        #     return self._find_median(sorted_numbers)[2]
 
         if (m > 2 and n > 2):
             nums1_median_data = self._find_median(nums1)
@@ -260,15 +260,18 @@ if __name__ == "__main__":
     # runTest(nums1, nums2)
     # nums2 = range(1,100, 1)
     # nums1 = [100,101,102]
-    count = 0
-    for i in range(100):
+    nums1 = [17037, 47647, 54131, 57685, 59273, 63808, 65619, 72075, 99335]
+    nums2 = [26594, 32089, 51015, 64259]
+    result = runTest(nums1, nums2)
+    # count = 0
+    # for i in range(100):
         
-        nums1 = build_list()
-        nums2 = build_list()
-        result = runTest(nums1, nums2)
-        if result == "!!!!!!!!!!!!!!!!!fail!!!!!!!!!!!!!!!!!":
-            count += 1
-            print('got some debugging to do')
-            runTest(nums1, nums2, debug=True)
+    #     nums1 = build_list()
+    #     nums2 = build_list()
+    #     result = runTest(nums1, nums2)
+    #     if result == "!!!!!!!!!!!!!!!!!fail!!!!!!!!!!!!!!!!!":
+    #         count += 1
+    #         print('got some debugging to do')
+    #         runTest(nums1, nums2, debug=True)
 
-    print(f"total failures {count} out of 100")
+    # print(f"total failures {count} out of 100")
