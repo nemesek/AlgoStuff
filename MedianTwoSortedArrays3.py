@@ -1,6 +1,9 @@
+from cgitb import small
 from cmath import exp
 from typing import List
 import random
+
+from numpy import pi
 
 class Solution:
     
@@ -59,43 +62,60 @@ class Solution:
     def _determine_pivot_indexes(self, larger, smaller):
         m = len(larger)
         n = len(smaller)
-        divisor = 2
-        idx1 = m//divisor
-        idx2 = n//divisor
+        divisor = 1
+        larger_idx = m//2
+        smaller_idx = n//2
         found = False
-        while found == False:
+
+        while found == False and (divisor <= n):
             divisor *= 2
-            larger_left, larger_right = larger[idx1 - 1], larger[idx1]
-            smaller_left, smaller_right = smaller[idx2 - 1], smaller[idx2]
+            larger_left, larger_right = larger[larger_idx - 1], larger[larger_idx]
+            smaller_left, smaller_right = smaller[smaller_idx - 1], smaller[smaller_idx]
             if larger_left > smaller_right:
                 print('no bueno shift smaller to the right and larger to the left')
                 shift = n//divisor
-                idx2 = idx2 + shift 
-                idx1 = idx1 - shift
+                smaller_idx = smaller_idx + shift 
+                larger_idx = larger_idx - shift
             elif smaller_left > larger_right:
                 print('pas tres bien shift smaller to the left and larger to the right')
                 shift = n//divisor
-                idx2 = idx2 - shift
-                idx1 = idx1 + shift
+                smaller_shift = smaller_idx - shift
+                if smaller_shift < 0:
+                    smaller_idx = smaller_shift
+                    larger_idx = larger_idx + smaller_shift
+                    found = True 
+                else:                
+                    smaller_idx = smaller_shift
+                    larger_idx = larger_idx + shift
             else:
                 found = True 
 
-        return (idx1,idx2)
+        return (larger_idx,smaller_idx)
 
 
 
 
     def findMedianSortedArrays(self, nums1: List[int], nums2: List[int], debug=False) -> float:
-        answer = (0,0)
+        pivots = (0,0)
+        answer = 0
         if debug:
             answer = self.findMedianSortedArraysTest(nums1, nums1)
             print('debug mode')
         
         if (len(nums2) > len(nums1)):
-            answer = self._determine_pivot_indexes(nums2, nums1)
+            pivots = self._determine_pivot_indexes(nums2, nums1)
+            if (pivots[1] >= 0):
+                answer = (nums2[pivots[0]] + nums1[pivots[1]])/2
+            else:
+                answer = (nums2[pivots[0]] + nums2[pivots[0] + 1])/2
         else:
-            answer = self._determine_pivot_indexes(nums1, nums2)
-        return 1.0
+            pivots = self._determine_pivot_indexes(nums1, nums2)
+            if pivots[1] >= 0:
+                answer = (nums1[pivots[0]] + nums2[pivots[1]])/2
+            else:
+                answer = (nums1[pivots[0]] + nums1[pivots[0] + 1])/2
+
+        return answer
 
 
             
