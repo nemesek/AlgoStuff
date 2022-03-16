@@ -44,20 +44,49 @@
 
 class Solution:
     def romanToInt(self, s: str) -> int:
-        
-        for c in s:
+        dict = {
+            'I': 1,
+            'V': 5,
+            'X': 10,
+            'L': 50,
+            'C': 100,
+            'D': 500,
+            'M': 1000
+        }
+        length = len(s)
+        total = 0
+        for idx, c in enumerate(s):
             if c == 'I':
-                return 1
-            elif c == 'V':
-                return 5
+                if (length - 1) > idx:
+                    next = s[idx + 1]
+                    if next == 'V':
+                        total += 4
+                    else:
+                        total += dict[c]
+                else:
+                    total += dict[c]
             else:
-                return 0
+                total += dict[c]
+        return total 
 
         
-
+def test(roman_num, expected):
+    sol = Solution()
+    answer = sol.romanToInt(roman_num)
+    if answer == expected:
+        print(f'Success: {roman_num} is equal to {answer}')
+    else:
+        print(f'!!!!Fail!!!!: {answer} is not equal to {expected}')
 
 if __name__ == "__main__":
-    sol = Solution()
-    input = 'V'
-    output = sol.romanToInt(input)
-    print(output)
+    # test('V', 5)
+    # test('III', 3)
+    # test('XII', 12)
+    # test('X', 10)
+    # test('L', 50)
+    # test('C', 100)
+    # test('D', 500)
+    # test('M', 1000)
+    # test('LVIII', 58)
+    # test('MCMXCIV', 1994)
+    test('IV', 4)
