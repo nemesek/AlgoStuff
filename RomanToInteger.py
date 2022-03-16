@@ -43,31 +43,71 @@
 # It is guaranteed that s is a valid roman numeral in the range [1, 3999].
 
 class Solution:
+    def __init__(self) -> None:
+        self._dict = {
+                'I': 1,
+                'V': 5,
+                'X': 10,
+                'L': 50,
+                'C': 100,
+                'D': 500,
+                'M': 1000
+            }
+
     def romanToInt(self, s: str) -> int:
-        dict = {
-            'I': 1,
-            'V': 5,
-            'X': 10,
-            'L': 50,
-            'C': 100,
-            'D': 500,
-            'M': 1000
-        }
         length = len(s)
         total = 0
-        for idx, c in enumerate(s):
-            if c == 'I':
-                if (length - 1) > idx:
-                    next = s[idx + 1]
-                    if next == 'V':
-                        total += 4
-                    else:
-                        total += dict[c]
+        for idx in range(len(s)):
+            while idx < length:
+                c = s[idx]
+                if c == 'I':
+                    val, idx = self._handle_I(s,idx)
+                    total += val 
+                elif c == 'X':
+                    val, idx = self._handle_X(s,idx)
+                    total += val 
                 else:
-                    total += dict[c]
+                    total += self._dict[c]
+                    idx += 1
+            return total 
+    
+    def _handle_I(self, s, idx):
+        total = 0
+        length = len(s)
+        if (length - 1) > idx:
+            next = s[idx + 1]
+            if next == 'V':
+                total += 4
+                idx += 2
+            elif next == 'X':
+                total += 9
+                idx += 2
             else:
-                total += dict[c]
-        return total 
+                total += self._dict['I']
+                idx += 1
+        else:
+            total += self._dict['I']
+            idx += 1
+        return (total, idx)
+
+    def _handle_X(self, s, idx):
+        total = 0
+        length = len(s)
+        if (length - 1) > idx:
+            next = s[idx + 1]
+            if next == 'L':
+                total += 40
+                idx += 2
+            elif next == 'C':
+                total += 90
+                idx += 2
+            else:
+                total += self._dict['X']
+                idx += 1
+        else:
+            total += self._dict['X']
+            idx += 1
+        return (total, idx)
 
         
 def test(roman_num, expected):
@@ -79,14 +119,16 @@ def test(roman_num, expected):
         print(f'!!!!Fail!!!!: {answer} is not equal to {expected}')
 
 if __name__ == "__main__":
-    # test('V', 5)
-    # test('III', 3)
-    # test('XII', 12)
-    # test('X', 10)
-    # test('L', 50)
-    # test('C', 100)
-    # test('D', 500)
-    # test('M', 1000)
-    # test('LVIII', 58)
-    # test('MCMXCIV', 1994)
+    test('V', 5)
+    test('III', 3)
+    test('XII', 12)
+    test('X', 10)
+    test('L', 50)
+    test('C', 100)
+    test('D', 500)
+    test('M', 1000)
+    test('LVIII', 58)
+    test('MCMXCIV', 1994)
     test('IV', 4)
+    test('IX', 9)
+    test('XL', 40)
