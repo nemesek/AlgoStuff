@@ -59,54 +59,60 @@ class Solution:
         total = 0
         for idx in range(len(s)):
             while idx < length:
-                c = s[idx]
-                if c == 'I':
-                    val, idx = self._handle_I(s,idx)
-                    total += val 
-                elif c == 'X':
-                    val, idx = self._handle_X(s,idx)
-                    total += val 
-                else:
-                    total += self._dict[c]
-                    idx += 1
+                val, idx = self._process_char(s, idx, total)
+                total += val 
             return total 
     
-    def _handle_I(self, s, idx):
-        total = 0
-        length = len(s)
-        if (length - 1) > idx:
-            next = s[idx + 1]
-            if next == 'V':
-                total += 4
-                idx += 2
-            elif next == 'X':
-                total += 9
-                idx += 2
-            else:
-                total += self._dict['I']
-                idx += 1
-        else:
-            total += self._dict['I']
-            idx += 1
-        return (total, idx)
 
-    def _handle_X(self, s, idx):
+    def _process_char(self, s, idx, total):
         total = 0
         length = len(s)
-        if (length - 1) > idx:
-            next = s[idx + 1]
-            if next == 'L':
-                total += 40
-                idx += 2
-            elif next == 'C':
-                total += 90
-                idx += 2
+        c = s[idx]
+        if c == 'I' or c == 'X' or c == 'C':
+            if (length - 1) <= idx:
+                return self._handle_base(c,idx,total)
+            if c == 'I':
+                next = s[idx + 1]
+                if next == 'V':
+                    total += 4
+                    idx += 2
+                elif next == 'X':
+                    total += 9
+                    idx += 2
+                else:
+                    total, idx = self._handle_base(c, idx, total)
+            elif c == 'X':
+                next = s[idx + 1]
+                if next == 'L':
+                    total += 40
+                    idx += 2
+                elif next == 'C':
+                    total += 90
+                    idx += 2
+                else:
+                    total, idx = self._handle_base(c, idx, total)
+            elif c == 'C':
+                next = s[idx + 1]
+                if next == 'D':
+                    total += 400
+                    idx += 2
+                    return (total, idx)
+                elif next == 'M':
+                    total += 900
+                    idx += 2
+                    return (total, idx)
+                else:
+                    total, idx = self._handle_base(c, idx, total)
             else:
-                total += self._dict['X']
-                idx += 1
+                total, idx = self._handle_base(c, idx, total)
         else:
-            total += self._dict['X']
-            idx += 1
+                total, idx = self._handle_base(c, idx, total)
+        
+        return (total, idx)
+    
+    def _handle_base(self, c, idx,total):
+        total += self._dict[c]
+        idx += 1
         return (total, idx)
 
         
