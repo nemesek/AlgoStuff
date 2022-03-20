@@ -59,57 +59,49 @@ class Solution:
         total = 0
         for idx in range(len(s)):
             while idx < length:
-                val, idx = self._process_char(s, idx, total)
+                val, idx = self._process_char(s, idx)
                 total += val 
             return total 
     
-
-    def _process_char(self, s, idx, total):
+    
+    def _process_char(self, s, idx):
         total = 0
         length = len(s)
         c = s[idx]
-        if c == 'I' or c == 'X' or c == 'C':
-            if (length - 1) <= idx:
-                return self._handle_base(c,idx,total)
-            if c == 'I':
-                next = s[idx + 1]
-                if next == 'V':
-                    total += 4
-                    idx += 2
-                elif next == 'X':
-                    total += 9
-                    idx += 2
-                else:
-                    total, idx = self._handle_base(c, idx, total)
-            elif c == 'X':
-                next = s[idx + 1]
-                if next == 'L':
-                    total += 40
-                    idx += 2
-                elif next == 'C':
-                    total += 90
-                    idx += 2
-                else:
-                    total, idx = self._handle_base(c, idx, total)
-            elif c == 'C':
-                next = s[idx + 1]
-                if next == 'D':
-                    total += 400
-                    idx += 2
-                    return (total, idx)
-                elif next == 'M':
-                    total += 900
-                    idx += 2
-                    return (total, idx)
-                else:
-                    total, idx = self._handle_base(c, idx, total)
-            else:
-                total, idx = self._handle_base(c, idx, total)
-        else:
-                total, idx = self._handle_base(c, idx, total)
+        if (length - 1) <= idx:
+            return self._handle_base(c,idx,total)
         
-        return (total, idx)
-    
+        tup = (c, s[idx + 1])
+        match tup: 
+            case ('I', 'V'):
+                total += 4
+                idx += 2
+                return (total, idx)
+            case('I', 'X'):
+                total += 9
+                idx += 2
+                return (total, idx)
+            case('X', 'L'):
+                total += 40
+                idx += 2
+                return (total, idx)
+            case('X', 'C'):
+                total += 90
+                idx += 2
+                return (total, idx)
+            case('C', 'D'):
+                total += 400
+                idx += 2
+                return (total, idx)
+            case('C', 'M'):
+                total += 900
+                idx += 2
+                return (total, idx)
+            case _:
+                return self._handle_base(c,idx,total)
+
+
+
     def _handle_base(self, c, idx,total):
         total += self._dict[c]
         idx += 1
