@@ -27,11 +27,24 @@ class Solution:
         if len(strs) == 0:
             return ""
         smallest = self._find_min_string(strs)
+        return self._find_match(smallest, strs)
+
+    def _find_match(self, s, strs: List[str]):
+        length = len(s)
+        if length == 0 : return ""
+        for idx,str in enumerate(strs):
+            prefix = str[0:length]
+            strs[idx] = prefix
+            if prefix != s:
+                s = s[0: length -1]
+                return self._find_match(s, strs)
+        return s
+
 
     def _find_min_string(self,strs):
         min_str = strs[0]
         for s in strs:
-            if len(s) < min_str:
+            if len(s) < len(min_str):
                 min_str = s 
         return min_str
 
@@ -47,4 +60,6 @@ def test(strs, expected):
 if __name__ == "__main__":
     test([], "")
     test(["flower", "flow", "flight"], "fl")
+    test(["dog", "racecar", "car" ], "")
+    test(["cherry", "chew", "chest"], "che")
     
