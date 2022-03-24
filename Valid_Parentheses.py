@@ -19,39 +19,53 @@
 # Input: s = "(]"
 # Output: false
 
+# Input: s = "{[]}"
+# Output: true
+
+# Input s = "([)]"
+# Output = false
+
 class Solution:
     def isValid(self, s: str) -> bool:
         length = len(s)
-        if length % 2 == 1:
+        if length % 2 == 1 and length < 2:
             return False 
         for idx, char in enumerate(s):
             match char:
                 case('('):
-                    next = s[idx + 1]
-                    if next != ')':
+                    remaining = s[idx +1:]
+                    if not any(n == ')' for n in remaining):
                         return False
+                    next = s[idx +1]
+                    if next != ')':
+                        return self.isValid(remaining)
                 case('['):
-                    next = s[idx + 1]
-                    if next != ']':
+                    remaining = s[idx +1:]
+                    if not any(n == ']' for n in remaining):
                         return False 
                 case('{'):
-                    next = s[idx + 1]
-                    if next != '}':
-                        return False
+                    remaining = s[idx +1:]
+                    if not any(n == '}' for n in remaining):
+                        return False 
                 
         return True 
 
 
-def test(s):
+def test(s, expected):
+
     sol = Solution()
     answer = sol.isValid(s)
-    print(answer)
+    success = answer == expected
+    print(success)
 
 if __name__ == "__main__":
-    test("()")
-    test("(")
-    test("())")
-    test("[]")
-    test("{}")
-    test("()[]{}")
-    test("()[]{)")
+    test("()", True)
+    test("(", False)
+    test("())", False)
+    test("[]", True)
+    test("{}", True)
+    test("()[]{}", True)
+    test("()[]{)", False)
+    test("({[]})", True)
+    test("{[]}", True)
+    test("([)]", False)
