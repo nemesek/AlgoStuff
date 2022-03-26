@@ -69,7 +69,8 @@ class Solution:
             original_idx = length - idx - 1
             match c:
                 case(')'):
-                    if char == '(': return (True,original_idx) 
+                    if char == '(': return (True,original_idx)
+                    allowed.append('(')
                 case(']'):
                     if char == '[': return (True, original_idx) 
                     allowed.append('[')
@@ -77,7 +78,10 @@ class Solution:
                     if char == '{': return (True,original_idx)
                     allowed.append('{')
                 case('('):
-                    return (False,original_idx) 
+                    if c in allowed:
+                        allowed.remove(c)
+                    else:
+                        return (False,original_idx) 
                 case('['):
                     if c in allowed:
                         allowed.remove(c)
@@ -144,11 +148,11 @@ def test(s, expected):
     # print(success)
 
 if __name__ == "__main__":
-    # test("()", True)
-    # test("(", False)
-    # test("())", False)
-    # test("[]", True)
-    # test("{}", True)
+    test("()", True)
+    test("(", False)
+    test("())", False)
+    test("[]", True)
+    test("{}", True)
     test("()[]{}", True)
     test("()[]{)", False)
     test("({[]})", True)
