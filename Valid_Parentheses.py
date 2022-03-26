@@ -25,7 +25,7 @@
 # Input s = "([)]"
 # Output = false
 
-from xmlrpc.client import Boolean
+
 
 
 class Solution:
@@ -33,9 +33,22 @@ class Solution:
         length = len(s)
         if length == 0: return True
         if length % 2 == 1: return False 
-
+        idx_pair = 1
         char = s[0]
-        result = self._is_valid_close(s, char)
+        next = s[1]
+        result = (True, 1)
+        match char:
+            case('('):
+                if next != ')':
+                    result = self._is_valid_close(s, char)
+            case('['):
+                if next != ']':
+                    result = self._is_valid_close(s, char)
+            case('{') :
+                if next != '}':
+                    result = self._is_valid_close(s, char)
+            case(_):
+                return False
 
         if not result[0]:
             return False
@@ -45,98 +58,43 @@ class Solution:
  
         return self.isValid(s)
 
-        # for idx, char in enumerate(s):
-        #     result = self._is_valid_close(s, char)
-        #     if result[0] == False:
-        #         return False 
-        
-        #return True
-
-            # match char:
-            #     case('('):
-            #         if not self._is_valid_close(s, char):
-            #             return False
-            #     case('['):
-            #         if not self._is_valid_close(s, char):
-            #     case('{'):
-            #         if not i
 
     def _is_valid_close(self, str, char):
         length = len(str)
         reverse_iterator = enumerate(reversed(str))
-        allowed = []
+        allowed = [char]
         for idx, c in reverse_iterator:
             original_idx = length - idx - 1
             match c:
                 case(')'):
-                    if char == '(': return (True,original_idx)
+                    if char == '(': 
+                        top = allowed.pop()
+                        if top != char:
+                            return (False, original_idx)
+                        return (True,original_idx)
                     allowed.append('(')
                 case(']'):
-                    if char == '[': return (True, original_idx) 
+                    if char == '[':
+                        top = allowed.pop()
+                        if top != char:
+                            return (False, original_idx)
+                        return (True,original_idx)
                     allowed.append('[')
                 case('}'):
-                    if char == '{': return (True,original_idx)
+                    if char == '{': 
+                        top = allowed.pop()
+                        if top != char:
+                            return (False, original_idx)
+                        return (True,original_idx)
                     allowed.append('{')
-                case('('):
-                    if c in allowed:
-                        allowed.remove(c)
-                    else:
-                        return (False,original_idx) 
-                case('['):
-                    if c in allowed:
-                        allowed.remove(c)
+                case('(' | '[' | '{'):
+                    if len(allowed) == 0:
+                        top= allowed.pop()
+                        if top != c:
+                            return (False, original_idx)
                     else:
                         return (False, original_idx)
-                case('{'):
-                    if c in allowed:
-                        allowed.remove(c)
-                    else:
-                        return (False,original_idx) 
         return (True,original_idx)  
-
-
-# class Solution:
-#     def isValid(self, s: str):
-#         length = len(s)
-#         if length == 0:
-#             return True 
-#         if length % 2 == 1:
-#             return False 
-#         mid = length // 2
-#         left = s[mid-1]
-#         right = s[mid]
-
-#         match left:
-#             case('('):
-#                 if right != ')':
-#                     return False
-#                 if length == 2: return True
-#                 remaining = self.remove_middle_character(s)
-#                 return self.isValid(remaining)
-#             case('['):
-#                 if right != ']':
-#                     return False 
-#                 if length == 2: return True
-#                 remaining = self.remove_middle_character(s)
-#                 return self.isValid(remaining)
-#             case('{'):
-#                 if right != '}':
-#                     return False 
-#                 if length == 2: return True
-
-#                 remaining = self.remove_middle_character(s)
-#                 return self.isValid(remaining)
-#             case(_):
-#                 return False 
-
-        
-    # def _remove_middle_character(self, s):
-    #     # why doesn't this work?
-    #     # remaining = s[:left - 1] + s[right + 1:]
-    #     h = len(s)//2
-    #     mod = (len(s) + 1) % 2
-    #     return s[:h - mod] + s[h + 1:]
-                
 
 
 def test(s, expected):
@@ -148,15 +106,18 @@ def test(s, expected):
     # print(success)
 
 if __name__ == "__main__":
-    test("()", True)
-    test("(", False)
-    test("())", False)
-    test("[]", True)
-    test("{}", True)
-    test("()[]{}", True)
-    test("()[]{)", False)
-    test("({[]})", True)
-    test("{[]}", True)
-    test("([)]", False)
-    test("){", False)
-    test("(())", True)
+    # test("()", True)
+    # test("(", False)
+    # test("())", False)
+    # test("[]", True)
+    # test("{}", True)
+    # test("()[]{}", True)
+    # test("()[]{)", False)
+    # test("({[]})", True)
+    # test("{[]}", True)
+    # test("([)]", False)
+    # test("){", False)
+    # test("(())", True)
+    # test("((", False)
+    # test("[[[]", False)
+    test("(([]){})", True)
