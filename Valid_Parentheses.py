@@ -33,58 +33,27 @@ class Solution:
     def __init__(self) -> None:
         self._pairs = {'(':')', ')': '(', '[':']', ']':'[', '{':'}','}':'{' }
 
-    def isValid(self, s: str) -> bool:
-        length = len(s)
-        if length == 0: return True
-        if length % 2 == 1: return False 
-        idx_pair = 1
-        char = s[0]
-        next = s[1]
-        result = (True, 1)
-        match char:
-            case ('(' | '[' | '{'):
-                if next != self._pairs[char]:
-                    result = self._is_valid_close(s, char)
-            case(_):
-                return False 
-
-        if not result[0]:
-            return False
-        idx_pair = result[1]
-        s = s[:idx_pair] + s[idx_pair + 1:]
-        s = s[1:]
- 
-        return self.isValid(s)
-
-
-    def _is_valid_close(self, str, char):
-        length = len(str)
-        reverse_iterator = enumerate(reversed(str))
-        allowed = [char]
-        for idx, c in reverse_iterator:
-            original_idx = length - idx - 1
+    def isValid(self, s: str) -> None:
+        stack = []
+        for c in s:
             match c:
                 case(')'|']'| '}'):
                     pair = self._pairs[c]
-                    if char == pair: 
-                        if idx == 0:
-                            return(True, original_idx)
-                        if len(allowed) == 0:
-                            return (False,original_idx)
-                        top = allowed.pop()
-                        if top != char:
-                            return (False, original_idx)
-                        return (True,original_idx)
-                    allowed.append(pair)
-                case('(' | '[' | '{'):
-                    if len(allowed) > 0:
-                        top= allowed.pop()
-                        if top != c:
-                            return (False, original_idx)
-                    else:
-                        return (False, original_idx)
-        return (True,original_idx)  
+                    if len(stack) == 0:
+                        return False
+                    if pair not in stack:
+                        return False
+                    top = stack.pop()
+                    if top != pair:
+                        stack.append(top)
+                        stack.append(pair)
 
+                case('(' | '[' | '{'):
+                    stack.append(c)
+        
+        result = True if len(stack) == 0 else False
+        return result 
+                    
 
 def test(s, expected):
 
