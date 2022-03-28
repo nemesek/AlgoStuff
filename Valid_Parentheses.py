@@ -29,6 +29,10 @@
 
 
 class Solution:
+
+    def __init__(self) -> None:
+        self._pairs = {'(':')', ')': '(', '[':']', ']':'[', '{':'}','}':'{' }
+
     def isValid(self, s: str) -> bool:
         length = len(s)
         if length == 0: return True
@@ -38,17 +42,11 @@ class Solution:
         next = s[1]
         result = (True, 1)
         match char:
-            case('('):
-                if next != ')':
-                    result = self._is_valid_close(s, char)
-            case('['):
-                if next != ']':
-                    result = self._is_valid_close(s, char)
-            case('{') :
-                if next != '}':
+            case ('(' | '[' | '{'):
+                if next != self._pairs[char]:
                     result = self._is_valid_close(s, char)
             case(_):
-                return False
+                return False 
 
         if not result[0]:
             return False
@@ -66,29 +64,20 @@ class Solution:
         for idx, c in reverse_iterator:
             original_idx = length - idx - 1
             match c:
-                case(')'):
-                    if char == '(': 
+                case(')'|']'| '}'):
+                    pair = self._pairs[c]
+                    if char == pair: 
+                        if idx == 0:
+                            return(True, original_idx)
+                        if len(allowed) == 0:
+                            return (False,original_idx)
                         top = allowed.pop()
                         if top != char:
                             return (False, original_idx)
                         return (True,original_idx)
-                    allowed.append('(')
-                case(']'):
-                    if char == '[':
-                        top = allowed.pop()
-                        if top != char:
-                            return (False, original_idx)
-                        return (True,original_idx)
-                    allowed.append('[')
-                case('}'):
-                    if char == '{': 
-                        top = allowed.pop()
-                        if top != char:
-                            return (False, original_idx)
-                        return (True,original_idx)
-                    allowed.append('{')
+                    allowed.append(pair)
                 case('(' | '[' | '{'):
-                    if len(allowed) == 0:
+                    if len(allowed) > 0:
                         top= allowed.pop()
                         if top != c:
                             return (False, original_idx)
@@ -106,18 +95,22 @@ def test(s, expected):
     # print(success)
 
 if __name__ == "__main__":
-    # test("()", True)
-    # test("(", False)
-    # test("())", False)
-    # test("[]", True)
-    # test("{}", True)
-    # test("()[]{}", True)
-    # test("()[]{)", False)
-    # test("({[]})", True)
-    # test("{[]}", True)
-    # test("([)]", False)
-    # test("){", False)
-    # test("(())", True)
-    # test("((", False)
-    # test("[[[]", False)
+    test("()", True)
+    test("(", False)
+    test("())", False)
+    test("[]", True)
+    test("{}", True)
+    test("()[]{}", True)
+    test("()[]{)", False)
+    test("({[]})", True)
+    test("{[]}", True)
+    test("([)]", False)
+    test("){", False)
+    test("(())", True)
+    test("((", False)
+    test("[[[]", False)
     test("(([]){})", True)
+    test("(()(", False)
+    test("[({(())}[()])]", True)
+    test("(())[()]", True)
+    test("[()]", True)
